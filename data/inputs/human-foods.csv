@@ -183,6 +183,7 @@ needs_QC,scientific_name,common_name,alternative_names,category,source
 ,Arripis trutta,kahawai,,animal,"FDA The Seafood List, 2023/07/21"
 ,Artemia,brine shrimps,,animal,FAO Cultured Aquatic Species Fact Sheets
 ,Aseraggodes kobensis,sole,milky spotted sole,animal,"FDA The Seafood List, 2023/07/21"
+,Asphodelus tenuifolius,Onion weed,"Wild onion, Hollow-stemmed asphodel, Pyazi, Bhukat, Bokat",plant,"AA, SEEM study, 2024/2/1"
 ,Aspongopus nepalensis,stink bug,ghondibug,animal,"Halloran, Flore, Vantomme, Roos, ""Edible Insects in Sustainable Food Systems"""
 1,Astacoidea,crayfish,crawfish,animal,JL
 ,Astronotus ocellatus,oscar,,animal,"FDA The Seafood List, 2023/07/21"
@@ -962,6 +963,7 @@ needs_QC,scientific_name,common_name,alternative_names,category,source
 ,Lachnolaimus maximus,hogfish,,animal,"FDA The Seafood List, 2023/07/21"
 ,Lactophrys triqueter,trunkfish,,animal,"FDA The Seafood List, 2023/07/21"
 ,Laemonema longipes,morid cod,cod,animal,"FDA The Seafood List, 2023/07/21"
+,Lagerstroemia speciosa,Giant crepe-myrtle,"Queen's crepe myrtle, banaba plant, pride of India, Queen's flower, Jarul",plant,"AA, SEEM study, 2024/2/1"
 1,Lagocephalus,fugu fish,,animal,JL
 ,Lagocephalus laevigatus,puffer,,animal,"FDA The Seafood List, 2023/07/21"
 ,Lagocephalus lagocephalus,puffer,,animal,"FDA The Seafood List, 2023/07/21"
@@ -1596,6 +1598,7 @@ needs_QC,scientific_name,common_name,alternative_names,category,source
 ,Portunus segnis,swimming crab,crab,animal,"FDA The Seafood List, 2023/07/21"
 ,Portunus trituberculatus,swimming crab,crab,animal,"FDA The Seafood List, 2023/07/21"
 ,Portunus tuberculosus,swimming crab,crab,animal,"FDA The Seafood List, 2023/07/21"
+,Prosopis cineraria,Ghaf,"Khejrl, Chhonkara, Jammi, Shami, Khijro, Janti, Jand",plant,"AA, SEEM study, 2024/2/1"
 ,Priacanthus arenatus,bigeye,,animal,"FDA The Seafood List, 2023/07/21"
 ,Priacanthus hamrur,bigeye,,animal,"FDA The Seafood List, 2023/07/21"
 ,Priacanthus macracanthus,bigeye,,animal,"FDA The Seafood List, 2023/07/21"
@@ -2637,6 +2640,7 @@ needs_QC,scientific_name,common_name,alternative_names,category,source
 ,Commelina africana,common yellow commelina,,plant,"Peters, ""Edible Wild Plants of Subsaharan Africa"""
 ,Commelina benghalensis,benghal dayflower,tropical spiderwort,plant,"Peters, ""Edible Wild Plants of Subsaharan Africa"""
 ,Commelina diffusa,climbing dayflower,spreading dayflower,plant,"Peters, ""Edible Wild Plants of Subsaharan Africa"""
+,Commelina communis,Asiatic dayflower,,plant,"AA, SEEM study, 2024/2/1"
 ,Commiphora africana,african myrrh,,plant,"Peters, ""Edible Wild Plants of Subsaharan Africa"""
 ,Corchorus capsularis,white jute,,plant,BP
 ,Corchorus olitorius,jute mallow,,plant,BP
@@ -3065,7 +3069,10 @@ needs_QC,scientific_name,common_name,alternative_names,category,source
 ,Matthiola incana,common stock,"brampton stock, gillyflower, hoary stock, imperial stock, stock, 10-week stock",plant,"Lim, ""Edible Medicinal and Non-Medicinal Plants"""
 ,Megaphrynium macrostachyum,yoruba soft cane,,plant,BP
 ,Melicoccus bijugatus,mamoncillo,,plant,Milla 2020 Crop Origins
+,Melilotus albus,White sweetclover,"White mellot, Bokhara clover, Sweet clover",plant,"AA, SEEM study, 2024/2/1"
+,Melilotus indicus,Indian sweet-clover,Sinji,plant,"AA, SEEM study, 2024/2/1"
 ,Melilotus macrorhizus,tall melilot,,plant,Milla 2020 Crop Origins
+,Melilotus officinalis,Sweet yellow clover,"Yellow mellot, Ribbed mellot, Common mellot",plant,"AA, SEEM study, 2024/2/1"
 ,Melissa officinalis,lemon balm,,plant,BP
 ,Mentha,mint,,plant,BP
 ,Mentha arvensis,field mint,,plant,"van Wyk, ""Food Plants of the World"""
@@ -3213,6 +3220,7 @@ needs_QC,scientific_name,common_name,alternative_names,category,source
 ,Petasites japonicus,sweet coltsfoot,,plant,Milla 2020 Crop Origins
 ,Petroselinum crispum,parsley,,plant,BP
 ,Petunia hybrida,petunia,"common petunia, garden petunia",plant,"Lim, ""Edible Medicinal and Non-Medicinal Plants"""
+,Phalaris canariensis,Canary grass,plant,"AA, SEEM study, 2024/2/1"
 ,Phaleria capitata,ongael,phaleria jack,plant,"Lim, ""Edible Medicinal and Non-Medicinal Plants"""
 ,Phaseolus acutifolius,tepary bean,,plant,Milla 2020 Crop Origins
 ,Phaseolus coccineus,runner bean,,plant,Milla 2020 Crop Origins
@@ -3568,6 +3576,7 @@ needs_QC,scientific_name,common_name,alternative_names,category,source
 ,Trichosanthes cucumerina,snake gourd,"chinese cucumber, club gourd, gudda bean, serpent cucumber, serpent gourd, snake tomato, viper's gourd",plant,"Lim, ""Edible Medicinal and Non-Medicinal Plants"""
 ,Trichosanthes japonica,kikarasu uri,,plant,Milla 2020 Crop Origins
 ,Trichosanthes pilosa,japanese snake gourd,,plant,Milla 2020 Crop Origins
+,Trifolium alexandrinum,Egyptian clover,berseem clover,plant,"AA, SEEM study, 2024/2/1"
 ,Trifolium pratense,red clover,"beebread, broad-leaved clover, chilean clover, cow clover, cowgrass clover, early blooming clover, june clover, king's crown, mammoth clover, mammoth red clover, meadow clover, meadow honeysuckle, meadow trefoil, medium red clover, multi-cut clover, peavine clover, purple clover, sweet clover, sweet kitty clover, wild clover",plant,"Lim, ""Edible Medicinal and Non-Medicinal Plants"""
 ,Trifolium repens,white clover,"honeysuckle clover, ladino clover, lodi clover, dutch clover, dutch white clover, white sweet clover",plant,"Lim, ""Edible Medicinal and Non-Medicinal Plants"""
 ,Trigonella foenum-graecum,fenugreek,,plant,JL
