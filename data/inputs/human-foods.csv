@@ -958,7 +958,7 @@ needs_QC,scientific_name,common_name,alternative_names,category,source
 ,Kyphosus vaigiensis,drummer,,animal,"FDA The Seafood List, 2023/07/21"
 ,Labeo bata,bata,,animal,"FDA The Seafood List, 2023/07/21"
 ,Labeo calbasu,calbasu,,animal,"FDA The Seafood List, 2023/07/21"
-,Labeo catla,catla,,animal,"AA (SEEM)"
+,Labeo catla,catla,,animal,AA (SEEM)
 ,Labeo rohita,roho labeo,rohu,animal,FAO Cultured Aquatic Species Fact Sheets
 ,Lachnolaimus maximus,hogfish,,animal,"FDA The Seafood List, 2023/07/21"
 ,Lactophrys triqueter,trunkfish,,animal,"FDA The Seafood List, 2023/07/21"
@@ -3698,3 +3698,4 @@ needs_QC,scientific_name,common_name,alternative_names,category,source
 ,Laminaria japonica,japanese kelp,,,FAO Cultured Aquatic Species Fact Sheets
 ,Nostoc flagelliforme,fat choy,,,SJ
 ,Medicago sativa,alfalfa,,plant,BN
+,Cinchona pubescens,red cinchona,,plant,BN
