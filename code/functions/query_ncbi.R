@@ -10,8 +10,8 @@ query_ncbi <- function(marker, organisms){
      library(Biostrings)
      library(rentrez)
      
-     # Long queries cause HTTP failure, so chunk into 50-species units
-     organisms <- split(organisms, ceiling(seq_along(organisms)/50))
+     # Long queries cause HTTP failure, so chunk into 1-species units
+     organisms <- split(organisms, ceiling(seq_along(organisms)/1))
      
      organism_query <- 
           organisms %>%
@@ -35,12 +35,14 @@ query_ncbi <- function(marker, organisms){
      seqs.count = 0
      
      for (i in seq_along(ids)){
-          if (ids[[i]]$count==0){
+          #PKY: Limit to 2000 to avoid R character strings are limited to 2^31-1 bytes error
+          if (ids[[i]]$count==0 || ids[[i]]$count > 2000){
                # Do nothing further if there aren't any hits
           } else {
                # Regular expression to pull FASTA header out from string
                # Don't match >, match immediately after up to first space
-               ex <- '[^>]\\S*' 
+               ex <- '[^>]\\S*'
+
                seqs <- 
                     entrez_fetch(db='nucleotide', 
                                  web_history = ids[[i]]$web_history, 
@@ -52,7 +54,7 @@ query_ncbi <- function(marker, organisms){
                # Save this to ultimately combine with taxonomy data, as want to
                # be able to identify these sequences after the fact
                accs <- str_extract(seqs, ex) 
-               
+
                # Keep full header for descriptive name
                headers <- str_extract(seqs, '^[^\n]*')
                
@@ -71,7 +73,7 @@ query_ncbi <- function(marker, organisms){
                seqs.count <- seqs.count + ids[[i]]$count
                seqs.return <- append(seqs.return, seqs)
                
-               cat('50 species processed... \n')
+               cat('1 species processed... \n')
                cat('Equal lengths:', seqs.count == length(seqs.return), '\n')
           }
      } 
