@@ -1,17 +1,16 @@
 ---
-title: "12SV5 reference"
-output:
-  pdf_document:
-    toc: true
-  html_document:
-    df_print: paged
-    toc: true
-    toc_float: true
+title: "trnL reference"
+output: 
+     html_document:
+          df_print: paged
+          toc: true
+          toc_float: true
 ---
 
-Stepping through this notebook will build a *12SV5* reference database, trimmed to sequences amplified by the desired primer set.
+Stepping through this notebook will build a *trnL* reference database, trimmed to sequences amplified by the desired primer set (here, *trnL*g and *trnL*h).
 
-This notebook use
+This notebook use 
+
 ```{r libraries, include=FALSE, echo=FALSE}
 library(Biostrings)
 library(here)
@@ -37,27 +36,36 @@ theme_set(theme_bw() +
 )
 ```
 
-# Read in data
+# Read in data 
 
 ```{r}
-# Primer sequences
-V5F <- DNAString('TAGAACAGGCTCCTCTAG')
-V5R <- DNAString('TTAGATACCCCACTATGC')
+# Primer sequences 
+trnLG <- DNAString('GGGCAATCCTGAGCCAA')
+trnLH <- DNAString('CCATTGAGTCTCTGCACCTATC')
 
-primers <- list(V5F, V5R)
+primers <- list(trnLG, trnLH)
 ```
 
 ```{r}
 # Manually curated list of dietary and medicinal plants
-animals <- 
+plants <- 
      here('data', 'inputs', 'human-foods.csv') |>
      read.csv(stringsAsFactors = FALSE) |>
-     filter(category == 'animal') |> 
+     filter(category == 'plant') |> 
      pull(scientific_name)
 
-length(animals)
-head(animals)
-tail(animals)
+length(plants)
+head(plants)
+tail(plants)
+```
+
+```{r}
+# Manual edits
+edits <- 
+     here('data', 'inputs', 'Manual renaming.csv') |> 
+     read_csv() 
+
+edits
 ```
 
 ```{r}
@@ -67,15 +75,15 @@ sql <- here('accessionTaxa.sql')
 
 ```{r}
 # Parsed RefSeq data (last organized Jan 2023)
-mito <- 
+plastid <- 
      readDNAStringSet(
           here('data', 
                'outputs', 
                'parsed-refs',
                'RefSeq',
-               'refseq_mito_species.fasta'))
+               'refseq_plastid_species.fasta'))
 
-mito
+plastid
 ```
 
 # Submit query
@@ -86,16 +94,16 @@ mito
 
 ```{r}
 # Note that there are lots of sequences that include Ns
-length(mito)
-length(clean(mito))
+length(plastid)
+length(clean(plastid))
 ```
 
 ```{r}
-refseq.12SV5 <- find_primer_pair(mito, 
+refseq.trnL <- find_primer_pair(plastid, 
                                 fwd = primers[[1]],
                                 rev = primers[[2]])
 
-cat(length(refseq.12SV5), 'sequences have the primer set')
+cat(length(refseq.trnL), 'sequences have the primer set')
 ```
 
 ### Subset to foods
@@ -106,78 +114,75 @@ Keep accessions from raw files, look up taxonomy, then assign a "lowest level" n
 
 ```{r}
 # Find indices of entries matching 
-animals.i <- 
-     lapply(animals, grep, x = names(refseq.12SV5)) %>%
+plants.i <- 
+     lapply(plants, grep, x = names(refseq.trnL)) %>%
      unlist()
 
-cat('There are', length(animals), 'food animals in our query\n')
+cat('There are', length(plants), 'food plants in our query\n')
 
 # Subset
-refseq.12SV5 <- refseq.12SV5[animals.i]
-cat(length(refseq.12SV5), 'have a 12SV5 sequence in the RefSeq mito database')
+refseq.trnL <- refseq.trnL[plants.i]
+cat(length(refseq.trnL), 'have a trnL sequence in the RefSeq plastid database')
 ```
 
 ```{r}
 # Strip name to only NCBI accession
-names(refseq.12SV5) %>% head()
-								  
+names(refseq.trnL) %>% head()
 
-names(refseq.12SV5) <- 
-     gsub(names(refseq.12SV5),
+names(refseq.trnL) <- 
+     gsub(names(refseq.trnL),
           pattern = ' .*$',
           replacement = '')
 
-head(names(refseq.12SV5))
-	
+head(names(refseq.trnL))
 ```
-
 ## NCBI (remote)
 
 ```{r}
 # Pull sequences from NCBI
-ncbi.12SV5 <- query_ncbi(marker = '12S',
-                        organisms = animals)
+ncbi.trnL <- query_ncbi(marker = 'trnL',
+                        organisms = plants)
 ```
 
 This is from the total number of available sequences
 
 ```{r}
-length(ncbi.12SV5)
-length(clean(ncbi.12SV5))
+length(ncbi.trnL)
+length(clean(ncbi.trnL))
 ```
 
 ### Find primers
 Now look for primer binding sites within retrieved sequences.
 
 ```{r}
-ncbi.12SV5 <- find_primer_pair(ncbi.12SV5, 
+ncbi.trnL <- find_primer_pair(ncbi.trnL, 
                               fwd = primers[[1]],
                               rev = primers[[2]])
 
-cat(length(ncbi.12SV5), 'sequences have the primer set')
+cat(length(ncbi.trnL), 'sequences have the primer set')
 ```
 
 ```{r}
 # Note some entries are marked as unverified
-names(ncbi.12SV5)[grepl('UNVERIFIED', names(ncbi.12SV5))] |> 
+names(ncbi.trnL)[grepl('UNVERIFIED', names(ncbi.trnL))] |> 
      head(5)
 
 # Remove 
-length(ncbi.12SV5)
-ncbi.12SV5 <- ncbi.12SV5[!(grepl('UNVERIFIED', names(ncbi.12SV5)))]
-length(ncbi.12SV5)
+length(ncbi.trnL)
+ncbi.trnL <- ncbi.trnL[!(grepl('UNVERIFIED', names(ncbi.trnL)))]
+length(ncbi.trnL)
 ```
 Want to convert these long, descriptive names to just an accession and taxon. Strip to accession number, and then use this to do a taxonomic lookup.
 
 ```{r}
 # Strip name to only NCBI accession
-names(ncbi.12SV5) |> head()
-names(ncbi.12SV5) <- 
-     names(ncbi.12SV5) |> 
+names(ncbi.trnL) |> head()
+names(ncbi.trnL) <- 
+     names(ncbi.trnL) |> 
      gsub(pattern = ' .+$', replacement = '') |> 
      gsub(pattern = '^>', replacement = '')
 
-head(names(ncbi.12SV5))
+head(names(ncbi.trnL))
 ```
 
 ## Combine
@@ -185,15 +190,15 @@ head(names(ncbi.12SV5))
 ### Check overlap
 
 ```{r}
-length(refseq.12SV5)
-length(ncbi.12SV5)
+length(refseq.trnL)
+length(ncbi.trnL)
 ```
 
 ```{r}
 # Named as accession numbers:
-intersect(names(ncbi.12SV5), names(refseq.12SV5)) |> length()
-setdiff(names(refseq.12SV5), names(ncbi.12SV5)) |> length()
-setdiff(names(ncbi.12SV5), names(refseq.12SV5)) |> length()
+intersect(names(ncbi.trnL), names(refseq.trnL)) |> length()
+setdiff(names(refseq.trnL), names(ncbi.trnL)) |> length()
+setdiff(names(ncbi.trnL), names(refseq.trnL)) |> length()
 ```
 
 Theoretically, RefSeq is entirely contained within NCBI's nucleotide record, but there are entries that are unique to RefSeq here.  Think this is because I restrict the query to "big" NCBI to have the term "trnL" in the record name-- not impossible to overcome, but currently don't have a strategy for handling the # and length of records that get pulled down without that filter in our query term.  This can be an area for future updates.
@@ -203,16 +208,67 @@ Theoretically, RefSeq is entirely contained within NCBI's nucleotide record, but
 # Data frame of results
 seqs.df <- 
      data.frame(source = 'RefSeq',
-                accession = names(refseq.12SV5),
-                seq = as.character(refseq.12SV5))
+                accession = names(refseq.trnL),
+                seq = as.character(refseq.trnL))
 
 seqs.df <- 
      data.frame(source = 'GenBank',
-                accession = names(ncbi.12SV5),
-                seq = as.character(ncbi.12SV5)) |> 
+                accession = names(ncbi.trnL),
+                seq = as.character(ncbi.trnL)) |> 
      bind_rows(seqs.df)
 
 head(seqs.df)
+```
+
+```{r}
+# Also add manual additions here
+additions <- filter(edits, type == 'add')
+additions
+```
+
+```{r}
+# Note that these don't have primers currently
+# To get the most accurate sequence, let's just pull these records from NCBI by their accession number and trim directly
+# Note some of these returned sequences are whole genomes-- takes a few mins.
+seqs <- 
+     entrez_fetch(db='nucleotide', 
+                  id = additions$accession, 
+                  rettype='fasta') %>%
+     # This returns concatenated sequence strings; split apart 
+     # so we can re-name inline
+     strsplit('\n{2,}') %>% # Usually two newline chars, but sometimes more
+     unlist()
+
+# Save this to ultimately combine with taxonomy data, as want to
+# be able to identify these sequences after the fact
+ex <- '[^>]\\S*' 
+accs <- str_extract(seqs, ex) 
+
+# Keep full header for descriptive name
+headers <- str_extract(seqs, '^[^\n]*')
+
+seqs <- 
+     seqs %>%
+     # Now update seqs to sequence only, stripping header
+     sub('^[^\n]*\n', '', .) %>%
+     # And removing separating \n characters
+     gsub('\n', '', .)
+
+# Now add to DNAStringSet
+seqs <- DNAStringSet(seqs)
+names(seqs) <- accs
+
+seqs <- find_primer_pair(seqs, 
+                         fwd = primers[[1]],
+                         rev = primers[[2]])
+```
+
+```{r}
+# This leaves 'source' labeled as NA for these entries
+seqs.df <-
+     data.frame(seq = as.character(seqs),
+                accession = names(seqs)) |> 
+     bind_rows(seqs.df) 
 ```
 
 ### Taxonomy
@@ -267,7 +323,9 @@ vars <- c("superkingdom",
           "family", 
           "genus",
           "species",
-          "subspecies")
+          "subspecies",
+          "varietas",
+          "forma")
 
 taxonomy <- data.frame(superkingdom = NULL,
                        phylum = NULL,
@@ -276,7 +334,9 @@ taxonomy <- data.frame(superkingdom = NULL,
                        family = NULL,
                        genus = NULL,
                        species = NULL,
-                       subspecies = NULL)
+                       subspecies = NULL,
+                       varietas = NULL,
+                       forma = NULL)
 
 for (i in seq_along(taxonomy.raw)){
      row.i <- 
@@ -313,15 +373,51 @@ seqs.df <-
                taxonomy)
 ```
 
+### Manual edits
+
+There are two types of edits we're making:
+     - **omissions**: High likelihood an included sequence has an incorrect taxon label, so we exclude it, and
+     - **renaming**: The labeled taxon name can be specified more precisely (currently, happens only for *B. oleracea* spp.)
+
+```{r}
+edits
+```
+
+```{r}
+# Handle omissions
+omit <- filter(edits, type=='omit')
+
+seqs.df <- 
+     filter(seqs.df, 
+            !(accession %in% omit$accession & seq %in% omit$sequence))
+```
+
+```{r}
+# Handle renaming 
+name.update <- filter(edits, type=='rename')
+
+filter(seqs.df,
+       accession %in% name.update$accession)
+```
+
+```{r}
+# Note that original sequence 'AC183493.1' not found, leaving off for now
+# Will need to generalize this later, but now can just update specifically
+seqs.df$varietas[seqs.df$accession == 'AB213010.1'] <- 'Brassica oleracea var. capitata'
+seqs.df$varietas[seqs.df$accession == 'AC183493.1'] <- 'Brassica oleracea var. alboglabra'
+seqs.df$varietas[seqs.df$accession == 'LR031874.1'] <- 'Brassica oleracea var. italica'
+seqs.df$varietas[seqs.df$accession == 'LR031875.1'] <- 'Brassica oleracea var. italica'
+seqs.df$varietas[seqs.df$accession == 'LR031876.1'] <- 'Brassica oleracea var. italica'
+```
+
 ```{r}
 # Get lowest-level taxon name
 seqs.df <- 
      seqs.df |> 
      MButils::lowest_level() |>
      rename(taxon = 'name') |> 
-     select(source, accession, taxon, taxid, superkingdom:subspecies, seq)
+     select(source, accession, taxon, taxid, superkingdom:forma, seq)
 ```
-
 
 #### QC
 
@@ -372,8 +468,8 @@ seqs.df <-
 ```{r}
 # Get orientation of sequence by finding primers
 # How many mismatches are allowed?
-fwd_err <- floor(0.2*length(V5F))
-rev_err <- floor(0.2*length(V5R))
+fwd_err <- floor(0.2*length(trnLG))
+rev_err <- floor(0.2*length(trnLH))
 
 fwd_err
 rev_err
@@ -387,7 +483,7 @@ names(ref) <- paste(seqs.df$accession, seqs.df$taxon)
 ```{r}
 # Forward primer at start of read
 fwd_matches <- 
-     vmatchPattern(V5F, 
+     vmatchPattern(trnLG, 
                    ref, 
                    max.mismatch = fwd_err,
                    fixed = TRUE) |>
@@ -398,7 +494,7 @@ fwd_matches <-
 
 # Reverse primer at start of read
 rev_matches <- 
-     vmatchPattern(V5R, 
+     vmatchPattern(trnLH, 
                    ref, 
                    max.mismatch = rev_err,
                    fixed = TRUE) |>
@@ -475,6 +571,8 @@ seqs.df <-
               genus,
               species,
               subspecies,
+              varietas,
+              forma, 
               taxon, 
               seq) |> 
      arrange(desc(source), accession) |> # Puts RefSeq accessions first 
@@ -494,40 +592,39 @@ seqs.df <- arrange(seqs.df,
                    accession)
 
 # Convert back to DNAStringSet object
-s12SV5 <- seqs.df$seq
-names(s12SV5) <- paste(seqs.df$accession, seqs.df$taxon)
+trnL <- seqs.df$seq
+names(trnL) <- paste(seqs.df$accession, seqs.df$taxon)
 
-s12SV5 <- DNAStringSet(s12SV5)
-s12SV5
+trnL <- DNAStringSet(trnL)
+trnL
 ```
-
 ```{r}
 # Save to file
-writeXStringSet(s12SV5,
+writeXStringSet(trnL,
             here('data',
                  'outputs',
                  'dada2-compatible',
-                 '12SV5',
-                 '12SV5FR.fasta'))
+                 'trnL',
+                 'trnLGH.fasta'))
 ```
 
 ```{r}
 seqs.df <- 
      seqs.df |> 
      unite(col = 'name',
-           superkingdom:subspecies,
+           superkingdom:forma,
            sep = ';') 
 
-names(s12SV5) <- seqs.df$name
+names(trnL) <- seqs.df$name
 ```
 
 ```{r}
-writeXStringSet(s12SV5,
+writeXStringSet(trnL,
             here('data',
                  'outputs',
                  'dada2-compatible',
-                 '12SV5',
-                 '12SV5FR_taxonomy.fasta'))
+                 'trnL',
+                 'trnLGH_taxonomy.fasta'))
 ```
 
 ### QIIME2 
@@ -551,10 +648,10 @@ seqs.df <- mutate(seqs.df,
                   accession = make.unique(accession,
                                     sep = '_'))
 
-names(s12SV5) <- seqs.df$accession
-writeXStringSet(s12SV5,
+names(trnL) <- seqs.df$acc
+writeXStringSet(trnL,
             file.path(outdir,
-            '12SV5-sequences.fasta'))
+            'trnL-sequences.fasta'))
 ```
 
 ```{r}
@@ -563,5 +660,24 @@ seqs.df |>
         Taxon = name) |>
  write_delim(delim = '\t',
              file.path(outdir,
-                       '12SV5-taxonomy.tsv'))
+                       'trnL-taxonomy.tsv'))
 ```
+
+```{bash engine.opts='-l'}
+# Running this block requires a QIIME2 conda environment on local machine
+# Note that yours may differ from the "qiime2-2022.8"; you can find correct name by running conda env list in the terminal
+# Convert both of the above objects to QIIME2 artifacts (QZA)
+cd "$QIIME2"
+conda activate qiime2-2022.8 
+
+qiime tools import \
+     --input-path trnL-sequences.fasta \
+     --output-path trnL-sequences.qza \
+     --type 'FeatureData[Sequence]'
+     
+qiime tools import \
+     --input-path trnL-taxonomy.tsv \
+     --output-path trnL-taxonomy.qza \
+     --type 'FeatureData[Taxonomy]'
+```
+
