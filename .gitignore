@@ -11,3 +11,4 @@
 /data/outputs/
 /results
 *.html
+.Rproj.user
