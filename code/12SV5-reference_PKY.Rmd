@@ -1,8 +1,7 @@
 ---
 title: "12SV5 reference"
 output:
-  pdf_document:
-    toc: true
+  pdf_document:    toc: true
   html_document:
     df_print: paged
     toc: true
@@ -196,7 +195,7 @@ setdiff(names(refseq.12SV5), names(ncbi.12SV5)) |> length()
 setdiff(names(ncbi.12SV5), names(refseq.12SV5)) |> length()
 ```
 
-Theoretically, RefSeq is entirely contained within NCBI's nucleotide record, but there are entries that are unique to RefSeq here.  Think this is because I restrict the query to "big" NCBI to have the term "trnL" in the record name-- not impossible to overcome, but currently don't have a strategy for handling the # and length of records that get pulled down without that filter in our query term.  This can be an area for future updates.
+Theoretically, RefSeq is entirely contained within NCBI's nucleotide record, but there are entries that are unique to RefSeq here.  Think this is because I restrict the query to "big" NCBI to have the term "12S" in the record name-- not impossible to overcome, but currently don't have a strategy for handling the # and length of records that get pulled down without that filter in our query term.  This can be an area for future updates.
 
 ### Merge
 ```{r}
@@ -249,6 +248,10 @@ for(i in seq_len(nrow(missing.df))) {
 # IMPORTANT: If repeating, check these to make sure they still line up
 # If any additions/changes to input files, likely they will not
 #ids[5742] <- 3483 # NC_027223.1 Cannabis sativa  
+
+# Remove entries not in query_ncbi_accession
+which(is.na(ids))
+ids <- na.omit(ids)
 
 # Confirm got them all
 any(is.na(ids))
@@ -493,6 +496,9 @@ seqs.df <- arrange(seqs.df,
                    taxon,
                    accession)
 
+# Remove entries that do not have taxonomy
+seqs.df <- seqs.df[!is.na(seqs.df$superkingdom),]
+
 # Convert back to DNAStringSet object
 s12SV5 <- seqs.df$seq
 names(s12SV5) <- paste(seqs.df$accession, seqs.df$taxon)
@@ -564,4 +570,8 @@ seqs.df |>
  write_delim(delim = '\t',
              file.path(outdir,
                        '12SV5-taxonomy.tsv'))
+```
+
+```{r}
+sessionInfo()
 ```
