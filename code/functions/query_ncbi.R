@@ -25,7 +25,7 @@ query_ncbi <- function(marker, organisms){
      
      ids <- lapply(query, 
                    entrez_search, 
-                   db='nucleotide', retmax = 10000, use_history=TRUE)
+                   db='nucleotide', retmax = 2000, use_history=TRUE)
      
      # Maybe-- flag how many times we hit retmax?
      # What's the default retmax?
@@ -53,26 +53,26 @@ query_ncbi <- function(marker, organisms){
                     unlist()
                # Save this to ultimately combine with taxonomy data, as want to
                # be able to identify these sequences after the fact
-               accs <- str_extract(seqs, ex) 
+               accs <- str_extract(seqs, ex)
 
                # Keep full header for descriptive name
                headers <- str_extract(seqs, '^[^\n]*')
-               
+
                seqs <- 
                     seqs %>%
                     # Now update seqs to sequence only, stripping header
                     sub('^[^\n]*\n', '', .) %>%
                     # And removing separating \n characters
                     gsub('\n', '', .)
-               
+
                # Now add to DNAStringSet
                seqs <- DNAStringSet(seqs)
                names(seqs) <- headers
-               
+
                # Update counters
                seqs.count <- seqs.count + ids[[i]]$count
                seqs.return <- append(seqs.return, seqs)
-               
+
                cat('1 species processed... \n')
                cat('Equal lengths:', seqs.count == length(seqs.return), '\n')
           }
