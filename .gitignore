@@ -6,9 +6,8 @@
 *.sql
 *.dmp
 *.gz
-/data/
 /data/inputs/
-/data/outputs/
+/data/outputs/parsed-refs
 /results
 *.html
 .Rproj.user
